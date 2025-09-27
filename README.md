@@ -202,29 +202,44 @@ credit_approval/
 
 2. **Register new customer (no history)**:
 ```powershell
-(Invoke-RestMethod -Uri "http://localhost:8000/register/" -Method POST -Body (@{first_name="Test";last_name="User";age=30;monthly_income=60000;phone_number=9876543210} | ConvertTo-Json) -ContentType "application/json") | ConvertTo-Json
+(Invoke-RestMethod -Uri "http://localhost:8000/register/" -Method POST -Body (@{first_name="Demo";last_name="Customer";age=35;monthly_income=80000;phone_number=9999888777} | ConvertTo-Json) -ContentType "application/json") | ConvertTo-Json
 ```
 
-3. **Check eligibility for new customer (should get better terms)**:
+3. **Check eligibility for new customer (use the customer_id from step 2 response)**:
 ```powershell
-(Invoke-RestMethod -Uri "http://localhost:8000/check-eligibility/" -Method POST -Body (@{customer_id=301;loan_amount=100000;interest_rate=8.0;tenure=12} | ConvertTo-Json) -ContentType "application/json") | ConvertTo-Json
+# Replace XXXX with the customer_id from the registration response above
+(Invoke-RestMethod -Uri "http://localhost:8000/check-eligibility/" -Method POST -Body (@{customer_id=XXXX;loan_amount=150000;interest_rate=9.0;tenure=18} | ConvertTo-Json) -ContentType "application/json") | ConvertTo-Json
 ```
 
 4. **Create loan for approved customer**:
 ```powershell
-(Invoke-RestMethod -Uri "http://localhost:8000/create-loan/" -Method POST -Body (@{customer_id=301;loan_amount=100000;interest_rate=12.0;tenure=12} | ConvertTo-Json) -ContentType "application/json") | ConvertTo-Json
+# Replace XXXX with the same customer_id from step 2
+(Invoke-RestMethod -Uri "http://localhost:8000/create-loan/" -Method POST -Body (@{customer_id=XXXX;loan_amount=150000;interest_rate=12.0;tenure=18} | ConvertTo-Json) -ContentType "application/json") | ConvertTo-Json
 ```
 
-5. **View created loan details**:
+5. **View created loan details (use loan_id from step 4 response)**:
 ```powershell
-(Invoke-RestMethod -Uri "http://localhost:8000/view-loan/1/" -Method GET) | ConvertTo-Json
+# Replace YYYY with the loan_id from the create loan response above
+(Invoke-RestMethod -Uri "http://localhost:8000/view-loan/YYYY/" -Method GET) | ConvertTo-Json
+```
+
+6. **View all loans for the customer**:
+```powershell
+# Replace XXXX with the customer_id from step 2
+(Invoke-RestMethod -Uri "http://localhost:8000/view-loans/XXXX/" -Method GET) | ConvertTo-Json
 ```
 
 ### Expected Results:
 - **Customer 1**: Rejected due to poor credit history from historical data
-- **Customer 301**: Approved with corrected interest rate (demonstrates credit scoring)
+- **New Customer**: Approved with corrected interest rate (demonstrates credit scoring)
 - **Loan Creation**: Successfully creates loan for eligible customers
 - **Loan Views**: Shows complete loan and customer information
+
+### Demo Flow:
+1. First command shows rejection for existing customer with poor history
+2. Second command registers a fresh customer and returns their ID
+3. Use that customer ID in subsequent commands
+4. New customers typically get approved with corrected interest rates
 
 ### Using curl (Linux/Mac):
 ```bash
