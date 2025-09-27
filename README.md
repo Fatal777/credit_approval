@@ -202,7 +202,7 @@ credit_approval/
 
 2. **Register new customer (no history)**:
 ```powershell
-$newCustomer = Invoke-RestMethod -Uri "http://localhost:8000/register/" -Method POST -Body (@{first_name="Demo";last_name="Customer";age=35;monthly_income=80000;phone_number=([System.Random]::new().Next(1000000000,9999999999))} | ConvertTo-Json) -ContentType "application/json"
+$newCustomer = Invoke-RestMethod -Uri "http://localhost:8000/register/" -Method POST -Body (@{first_name="Demo";last_name="Customer";age=35;monthly_income=80000;phone_number=9876543210} | ConvertTo-Json) -ContentType "application/json"
 $newCustomer | ConvertTo-Json
 $customerId = $newCustomer.customer_id
 ```
@@ -228,7 +228,7 @@ $loanId = $loan.loan_id
 6. **View all loans for the customer**:
 ```powershell
 (Invoke-RestMethod -Uri "http://localhost:8000/view-loans/$customerId/" -Method GET) | ConvertTo-Json
-```
+git s```
 
 ### Expected Results:
 - **Customer 1**: Rejected due to poor credit history from historical data
